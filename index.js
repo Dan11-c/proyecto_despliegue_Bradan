@@ -14,6 +14,6 @@ app.use('/eventos', eventoRouter);
 app.use('/recintos', recintoRouter);
 
 
-app.listen(3000, () => {
-    console.log('Servidor escuchando en el puerto 3000');
+app.listen(process.env.port || 3000, () => {
+    console.log('Servidor escuchando en el puerto ' + (process.env.port || 3000));
 });
