@@ -1,0 +1,486 @@
+{
+  "info": {
+    "name": "Proyecto1 Bradan - API Eventos",
+    "description": "Ejecuta antes `npm run seed` y arranca el servidor con `npm start`. Ejecuta la colección en orden (Collection Runner).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Recintos",
+      "item": [
+        {
+          "name": "Listar recintos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "const r = pm.response.json().resultado;",
+                  "pm.test(\"Hay 3 recintos del seed\", () => pm.expect(r.length).to.be.at.least(3));",
+                  "const wizink = r.find(x => x.nombre === \"WiZink Center\") || r[0];",
+                  "pm.collectionVariables.set(\"recintoId\", wizink._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/recintos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recintos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Recintos por localidad (Madrid)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "pm.test(\"Todos son de Madrid\", () => pm.response.json().resultado.forEach(x => pm.expect(x.localidad).to.eql(\"Madrid\")));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/recintos/localidad/Madrid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recintos",
+                "localidad",
+                "Madrid"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Recinto por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "pm.test(\"Es el WiZink Center\", () => pm.expect(pm.response.json().resultado.nombre).to.eql(\"WiZink Center\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/recintos/{{recintoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recintos",
+                "{{recintoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear recinto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "pm.collectionVariables.set(\"nuevoRecintoId\", pm.response.json().resultado._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/recintos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recintos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Auditorio de Valencia\",\n  \"direccion\": \"Paseo de la Alameda, 30\",\n  \"localidad\": \"Valencia\",\n  \"aforoMaximo\": 1500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar recinto creado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/recintos/{{nuevoRecintoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recintos",
+                "{{nuevoRecintoId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Eventos",
+      "item": [
+        {
+          "name": "Listar eventos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "const r = pm.response.json().resultado;",
+                  "pm.test(\"Hay 3 eventos del seed\", () => pm.expect(r.length).to.be.at.least(3));",
+                  "const ev = r.find(x => x.nombre === \"Summer Rock Fest 2027\") || r[0];",
+                  "pm.collectionVariables.set(\"eventoId\", ev._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/eventos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eventos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Evento por id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "pm.test(\"Recinto poblado\", () => pm.expect(pm.response.json().resultado.recinto.nombre).to.eql(\"WiZink Center\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/eventos/{{eventoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eventos",
+                "{{eventoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eventos futuros por localidad (Madrid)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/eventos/localidad/Madrid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eventos",
+                "localidad",
+                "Madrid"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultar entradas VIP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "const e = pm.response.json().resultado;",
+                  "pm.test(\"Precio VIP 120\", () => pm.expect(e.precio).to.eql(120));",
+                  "pm.collectionVariables.set(\"vipDisponibles\", e.disponibles);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/eventos/entradas/{{eventoId}}/VIP",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eventos",
+                "entradas",
+                "{{eventoId}}",
+                "VIP"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Comprar 2 entradas VIP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "const vip = pm.response.json().resultado.entradas.find(e => e.tipo === \"VIP\");",
+                  "pm.test(\"Disponibles bajan en 2\", () => pm.expect(vip.disponibles).to.eql(Number(pm.collectionVariables.get(\"vipDisponibles\")) - 2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/eventos/entradas/{{eventoId}}/VIP/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eventos",
+                "entradas",
+                "{{eventoId}}",
+                "VIP",
+                "2"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear evento",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "pm.collectionVariables.set(\"nuevoEventoId\", pm.response.json().resultado._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eventos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eventos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Festival de Jazz Madrid 2027\",\n  \"fecha\": \"2027-10-05T20:00:00Z\",\n  \"recinto\": \"{{recintoId}}\",\n  \"entradas\": [\n    {\n      \"tipo\": \"General\",\n      \"precio\": 30,\n      \"disponibles\": 200\n    },\n    {\n      \"tipo\": \"VIP\",\n      \"precio\": 90,\n      \"disponibles\": 20\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Actualizar evento creado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);",
+                  "pm.test(\"Nombre actualizado\", () => pm.expect(pm.response.json().resultado.nombre).to.eql(\"Festival de Jazz Madrid 2027 (Edición especial)\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/eventos/{{nuevoEventoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eventos",
+                "{{nuevoEventoId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Festival de Jazz Madrid 2027 (Edición especial)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Eliminar evento creado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"ok es true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/eventos/{{nuevoEventoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eventos",
+                "{{nuevoEventoId}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "recintoId",
+      "value": ""
+    },
+    {
+      "key": "nuevoRecintoId",
+      "value": ""
+    },
+    {
+      "key": "eventoId",
+      "value": ""
+    },
+    {
+      "key": "nuevoEventoId",
+      "value": ""
+    },
+    {
+      "key": "vipDisponibles",
+      "value": ""
+    }
+  ]
+}
